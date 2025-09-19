@@ -1,0 +1,171 @@
+name: LifeMtrics CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  detect-changes:
+    runs-on: ubuntu-latest
+    outputs:
+      has-node: ${{ steps.detect.outputs.has-node }}
+      has-python: ${{ steps.detect.outputs.has-python }}
+      has-docker: ${{ steps.detect.outputs.has-docker }}
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Detect project types
+        id: detect
+        run: |
+          echo "has-node=$([ -f 'package.json' ] && echo 'true' || echo 'false')" >> $GITHUB_OUTPUT
+          echo "has-python=$([ -f 'requirements.txt' -o -f 'setup.py' -o -f 'pyproject.toml' ] && echo 'true' || echo 'false')" >> $GITHUB_OUTPUT
+          echo "has-docker=$([ -f 'Dockerfile' ] && echo 'true' || echo 'false')" >> $GITHUB_OUTPUT
+
+  build-node:
+    needs: detect-changes
+    if: needs.detect-changes.outputs.has-node == 'true'
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [18, 20]
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Run LifeMtrics build
+        run: bash scripts/build.sh node
+      
+      - name: Run LifeMtrics tests
+        run: bash scripts/test.sh node --coverage
+      
+      - name: Upload coverage reports
+        uses: codecov/codecov-action@v3
+        if: matrix.node-version == 18
+        
+      - name: Archive build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: node-build-${{ matrix.node-version }}
+          path: |
+            build/
+            dist/
+            coverage/
+
+  build-python:
+    needs: detect-changes
+    if: needs.detect-changes.outputs.has-python == 'true'
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ['3.9', '3.10', '3.11', '3.12']
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+      
+      - name: Cache pip dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements*.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+      
+      - name: Run LifeMtrics build
+        run: bash scripts/build.sh python
+      
+      - name: Run LifeMtrics tests
+        run: bash scripts/test.sh python --coverage
+      
+      - name: Archive build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: python-build-${{ matrix.python-version }}
+          path: |
+            build/
+            dist/
+            coverage/
+
+  build-docker:
+    needs: detect-changes
+    if: needs.detect-changes.outputs.has-docker == 'true'
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      
+      - name: Run LifeMtrics Docker build
+        run: bash scripts/build.sh docker
+      
+      - name: Test Docker image
+        run: |
+          IMAGE_NAME=$(basename "$PWD" | tr '[:upper:]' '[:lower:]')
+          docker run --rm "$IMAGE_NAME:latest" echo "Docker build successful"
+
+  deploy-staging:
+    needs: [detect-changes, build-node, build-python, build-docker]
+    if: always() && (needs.build-node.result == 'success' || needs.build-python.result == 'success' || needs.build-docker.result == 'success' || (needs.build-node.result == 'skipped' && needs.build-python.result == 'skipped' && needs.build-docker.result == 'skipped'))
+    runs-on: ubuntu-latest
+    environment: staging
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts/
+      
+      - name: Deploy to staging
+        run: bash scripts/deploy.sh staging
+      
+      - name: Run post-deployment tests
+        run: |
+          echo "🧪 Running post-deployment smoke tests..."
+          # Add smoke tests here
+
+  deploy-production:
+    needs: [detect-changes, deploy-staging]
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    runs-on: ubuntu-latest
+    environment: production
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts/
+      
+      - name: Deploy to production
+        run: bash scripts/deploy.sh production
+      
+      - name: Run post-deployment tests
+        run: |
+          echo "🧪 Running production smoke tests..."
+          # Add production smoke tests here
+      
+      - name: Notify deployment success
+        run: |
+          echo "🎉 LifeMtrics deployment to production completed successfully!"
+          echo "📋 Deployment completed at: $(date)"

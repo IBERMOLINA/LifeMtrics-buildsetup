@@ -1,0 +1,23 @@
+name: Codespace Setup
+
+on:
+  codespace:
+
+jobs:
+  setup-codespace:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Welcome to LifeMtrics Codespace
+        run: |
+          echo "🚀 Welcome to your LifeMtrics development environment!"
+          echo "🔧 Available commands:"
+          echo "  - build: Run the build process"
+          echo "  - dev: Start development server"
+          echo "  - test: Run tests"
+          echo "  - deploy: Deploy application"
+          echo ""
+          echo "💡 GitHub Copilot is enabled and ready to help!"
+          echo "📚 Check the README for more information"
+      
+      - name: Setup complete
+        run: echo "✅ LifeMtrics Codespace is ready for development!"
