@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LifeOS - Track Your Life Metrics</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="logo">
+                <h1>📊 LifeOS</h1>
+                <p>Track, analyze, and visualize your daily metrics</p>
+            </div>
+            <nav class="nav">
+                <button class="nav-btn active" data-tab="dashboard">Dashboard</button>
+                <button class="nav-btn" data-tab="health">Health</button>
+                <button class="nav-btn" data-tab="productivity">Productivity</button>
+                <button class="nav-btn" data-tab="mood">Mood</button>
+                <button class="nav-btn" data-tab="habits">Habits</button>
+            </nav>
+        </header>
+
+        <main class="main-content">
+            <!-- Dashboard Tab -->
+            <section id="dashboard" class="tab-content active">
+                <h2>📈 Your Life Dashboard</h2>
+                <div class="dashboard-grid">
+                    <div class="metric-card">
+                        <h3>Health Score</h3>
+                        <div class="metric-value" id="health-avg">-</div>
+                        <div class="metric-trend" id="health-trend">No data</div>
+                    </div>
+                    <div class="metric-card">
+                        <h3>Productivity</h3>
+                        <div class="metric-value" id="productivity-avg">-</div>
+                        <div class="metric-trend" id="productivity-trend">No data</div>
+                    </div>
+                    <div class="metric-card">
+                        <h3>Mood</h3>
+                        <div class="metric-value" id="mood-avg">-</div>
+                        <div class="metric-trend" id="mood-trend">No data</div>
+                    </div>
+                    <div class="metric-card">
+                        <h3>Habits</h3>
+                        <div class="metric-value" id="habits-completion">-</div>
+                        <div class="metric-trend" id="habits-trend">No data</div>
+                    </div>
+                </div>
+                
+                <div class="charts-container">
+                    <div class="chart-card">
+                        <h3>Weekly Overview</h3>
+                        <canvas id="weeklyChart"></canvas>
+                    </div>
+                    <div class="chart-card">
+                        <h3>Monthly Trends</h3>
+                        <canvas id="monthlyChart"></canvas>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Health Tab -->
+            <section id="health" class="tab-content">
+                <h2>🏥 Health Metrics</h2>
+                <div class="input-section">
+                    <h3>Add Health Entry</h3>
+                    <form id="health-form">
+                        <div class="form-group">
+                            <label for="health-score">Overall Health (1-10):</label>
+                            <input type="number" id="health-score" min="1" max="10" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="sleep-hours">Sleep Hours:</label>
+                            <input type="number" id="sleep-hours" min="0" max="24" step="0.5">
+                        </div>
+                        <div class="form-group">
+                            <label for="exercise-minutes">Exercise Minutes:</label>
+                            <input type="number" id="exercise-minutes" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label for="water-intake">Water Intake (glasses):</label>
+                            <input type="number" id="water-intake" min="0">
+                        </div>
+                        <button type="submit">Add Entry</button>
+                    </form>
+                </div>
+                <div class="entries-section">
+                    <h3>Recent Entries</h3>
+                    <div id="health-entries" class="entries-list"></div>
+                </div>
+            </section>
+
+            <!-- Productivity Tab -->
+            <section id="productivity" class="tab-content">
+                <h2>⚡ Productivity Metrics</h2>
+                <div class="input-section">
+                    <h3>Add Productivity Entry</h3>
+                    <form id="productivity-form">
+                        <div class="form-group">
+                            <label for="productivity-score">Productivity Score (1-10):</label>
+                            <input type="number" id="productivity-score" min="1" max="10" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="focus-hours">Focus Hours:</label>
+                            <input type="number" id="focus-hours" min="0" step="0.5">
+                        </div>
+                        <div class="form-group">
+                            <label for="tasks-completed">Tasks Completed:</label>
+                            <input type="number" id="tasks-completed" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label for="distractions">Distractions (count):</label>
+                            <input type="number" id="distractions" min="0">
+                        </div>
+                        <button type="submit">Add Entry</button>
+                    </form>
+                </div>
+                <div class="entries-section">
+                    <h3>Recent Entries</h3>
+                    <div id="productivity-entries" class="entries-list"></div>
+                </div>
+            </section>
+
+            <!-- Mood Tab -->
+            <section id="mood" class="tab-content">
+                <h2>😊 Mood Tracking</h2>
+                <div class="input-section">
+                    <h3>Add Mood Entry</h3>
+                    <form id="mood-form">
+                        <div class="form-group">
+                            <label for="mood-score">Mood (1-10):</label>
+                            <input type="number" id="mood-score" min="1" max="10" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="energy-level">Energy Level (1-10):</label>
+                            <input type="number" id="energy-level" min="1" max="10">
+                        </div>
+                        <div class="form-group">
+                            <label for="stress-level">Stress Level (1-10):</label>
+                            <input type="number" id="stress-level" min="1" max="10">
+                        </div>
+                        <div class="form-group">
+                            <label for="mood-notes">Notes:</label>
+                            <textarea id="mood-notes" rows="3"></textarea>
+                        </div>
+                        <button type="submit">Add Entry</button>
+                    </form>
+                </div>
+                <div class="entries-section">
+                    <h3>Recent Entries</h3>
+                    <div id="mood-entries" class="entries-list"></div>
+                </div>
+            </section>
+
+            <!-- Habits Tab -->
+            <section id="habits" class="tab-content">
+                <h2>🎯 Habit Tracking</h2>
+                <div class="input-section">
+                    <h3>Add Habit Entry</h3>
+                    <form id="habits-form">
+                        <div class="form-group">
+                            <label for="habit-name">Habit Name:</label>
+                            <input type="text" id="habit-name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="habit-completed">Completed:</label>
+                            <input type="checkbox" id="habit-completed">
+                        </div>
+                        <div class="form-group">
+                            <label for="habit-streak">Current Streak:</label>
+                            <input type="number" id="habit-streak" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label for="habit-notes">Notes:</label>
+                            <textarea id="habit-notes" rows="2"></textarea>
+                        </div>
+                        <button type="submit">Add Entry</button>
+                    </form>
+                </div>
+                <div class="entries-section">
+                    <h3>Recent Entries</h3>
+                    <div id="habits-entries" class="entries-list"></div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="js/app.js"></script>
+</body>
+</html>
