@@ -1,0 +1,18 @@
+# CODEOWNERS
+# Syntax: https://docs.github.com/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+# Place more specific patterns above less specific ones.
+
+# Default owners for everything
+* @IBERMOLINA
+
+# Docs
+/docs/ @IBERMOLINA
+
+# Web app
+/apps/web/ @IBERMOLINA
+
+# Packages
+/packages/ @IBERMOLINA
+
+# CI
+/.github/ @IBERMOLINA

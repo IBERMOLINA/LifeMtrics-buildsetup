@@ -13,9 +13,13 @@ export default function Providers({ children }: { children: ReactNode }) {
     });
   }, []);
 
-  const publishableKey = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY as string | undefined;
-  if (!publishableKey) {
+  const clerkPk = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY as string | undefined;
+  if (!clerkPk) {
     return <>{children}</>;
   }
-  return <ClerkProvider publishableKey={publishableKey}>{children}</ClerkProvider>;
+  return (
+    <ClerkProvider publishableKey={clerkPk} signInUrl="/sign-in" signUpUrl="/sign-up">
+      {children}
+    </ClerkProvider>
+  );
 }
