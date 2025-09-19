@@ -1,0 +1,6 @@
+# CODEOWNERS
+* @IBERMOLINA
+/docs/ @IBERMOLINA
+/apps/web/ @IBERMOLINA
+/packages/ @IBERMOLINA
+/.github/ @IBERMOLINA
