@@ -17,39 +17,3 @@
     "prettier": "^3.3.3"
   }
 }
-{
-  "name": "lifemtrics",
-  "version": "0.1.0",
-  "private": true,
-  "main": "expo-router/entry",
-  "scripts": {
-    "start": "expo start",
-    "android": "expo run:android",
-    "ios": "expo run:ios",
-    "typecheck": "tsc --noEmit",
-    "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
-  },
-  "dependencies": {
-    "expo": "*",
-    "expo-router": "*",
-    "expo-sqlite": "*",
-    "expo-updates": "*",
-    "react": "*",
-    "react-native": "*",
-    "react-native-gesture-handler": "*",
-    "react-native-reanimated": "*",
-    "react-native-svg": "*",
-    "@shopify/flash-list": "*",
-    "@tanstack/react-query": "*",
-    "zustand": "*",
-    "phosphor-react-native": "*",
-    "drizzle-orm": "*"
-  },
-  "devDependencies": {
-    "@types/react": "*",
-    "@types/react-native": "*",
-    "babel-preset-expo": "*",
-    "eslint": "*",
-    "typescript": "*"
-  }
-}
