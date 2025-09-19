@@ -1,0 +1,69 @@
+{
+  "name": "lifemtrics-buildsetup",
+  "version": "1.0.0",
+  "description": "Automation for app building with GitHub Codespace and Copilot integration",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "build": "echo 'Building LifeMtrics project...' && mkdir -p build && echo 'Build completed'",
+    "dev": "bash scripts/dev.sh",
+    "test": "echo 'Running LifeMtrics tests...' && echo 'No tests defined yet - add your tests here'",
+    "test:coverage": "bash scripts/test.sh --coverage",
+    "deploy": "bash scripts/deploy.sh",
+    "deploy:staging": "bash scripts/deploy.sh staging",
+    "deploy:production": "bash scripts/deploy.sh production",
+    "setup": "bash .devcontainer/setup.sh",
+    "logs": "tail -f logs/build.log",
+    "clean": "rm -rf build dist coverage logs/*.log",
+    "lint": "eslint . --fix",
+    "format": "prettier --write .",
+    "typecheck": "tsc --noEmit",
+    "start": "node index.js",
+    "serve": "http-server dist -p 3000"
+  },
+  "keywords": [
+    "automation",
+    "build-setup",
+    "codespace",
+    "copilot",
+    "ci-cd",
+    "lifemtrics"
+  ],
+  "author": "IBERMOLINA",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/IBERMOLINA/LifeMtrics-buildsetup.git"
+  },
+  "bugs": {
+    "url": "https://github.com/IBERMOLINA/LifeMtrics-buildsetup/issues"
+  },
+  "homepage": "https://github.com/IBERMOLINA/LifeMtrics-buildsetup#readme",
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "eslint": "^8.0.0",
+    "prettier": "^3.0.0",
+    "typescript": "^5.0.0",
+    "http-server": "^14.0.0",
+    "concurrently": "^8.0.0",
+    "nodemon": "^3.0.0",
+    "cross-env": "^7.0.0"
+  },
+  "dependencies": {},
+  "peerDependencies": {},
+  "overrides": {},
+  "workspaces": [],
+  "config": {
+    "lifemtrics": {
+      "buildDir": "build",
+      "logDir": "logs",
+      "distDir": "dist",
+      "supportedProjectTypes": ["node", "python", "docker"],
+      "defaultProjectType": "auto"
+    }
+  }
+}
