@@ -6,3 +6,6 @@ dist
 .env*
 pnpm-lock.yaml
 coverage
+
+# Ignore nested repo folder
+LifeMtrics-buildsetup/
