@@ -1,4 +1,6 @@
-stillversion: 2
+stillexport PATH="/workspaces/vscode-docs/tools/bin:$PATH"
+gh --versionexport PATH="/workspaces/vscode-docs/tools/bin:$PATH"
+gh --versionversion: 2
 updates:
   - package-ecosystem: "github-actions"
     directory: "/"
