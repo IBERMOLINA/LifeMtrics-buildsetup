@@ -259,7 +259,8 @@ deploy_to_github_pages() {
         # This would typically push to gh-pages branch
         # For now, just prepare the files
         log "📦 Preparing GitHub Pages deployment..."
-        cp -r "$deploy_dir"/* /tmp/gh-pages/ 2>/dev/null || mkdir -p /tmp/gh-pages
+        mkdir -p /tmp/gh-pages
+        cp -r "$deploy_dir"/* /tmp/gh-pages/
         
         log "✅ GitHub Pages deployment prepared in /tmp/gh-pages/"
     else
