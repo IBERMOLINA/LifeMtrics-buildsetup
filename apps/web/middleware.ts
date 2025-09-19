@@ -1,15 +1,24 @@
-import { authMiddleware } from "@clerk/nextjs";
+import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
+
+const isPublicRoute = createRouteMatcher([
+  "/",
+  "/api/webhooks/stripe",
+  "/sign-in(.*)",
+  "/sign-up(.*)",
+]);
 
 const hasClerk = !!process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY && !!process.env.CLERK_SECRET_KEY;
 
-const middlewareImpl = hasClerk
-  ? authMiddleware({
-      publicRoutes: ["/", "/api/webhooks/stripe", "/sign-in(.*)", "/sign-up(.*)"],
+export default hasClerk
+  ? clerkMiddleware(async (auth, req) => {
+      if (isPublicRoute(req)) return;
+      const { userId, redirectToSignIn } = await auth();
+      if (!userId) return redirectToSignIn();
     })
-  : (() => NextResponse.next());
-
-export default middlewareImpl;
+  : function middleware() {
+      return NextResponse.next();
+    };
 
 export const config = {
   matcher: [
