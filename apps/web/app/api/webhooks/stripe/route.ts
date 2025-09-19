@@ -34,12 +34,3 @@ export async function POST(req: NextRequest) {
   }
 }
 import type { NextRequest } from "next/server";
-
-export async function POST(req: NextRequest) {
-  try {
-    // TODO: verify signature using STRIPE_WEBHOOK_SECRET and process events
-    return new Response("ok", { status: 200 });
-  } catch (err) {
-    return new Response("error", { status: 400 });
-  }
-}
